@@ -4,89 +4,86 @@ namespace lab1_1
 {
     public class Ship
     {
-        private string type;
-        private string condition;
-        private int number_of_decks;
+        private string _type;
+        private string _condition;
+        private int _number_of_decks;
 
-        public Ship()
+        public Ship() : this("boat", "combat-ready", 1)
         {
-            type = "boat";
-            condition = "combat-ready";
-            number_of_decks = 1;
         }
         public Ship(string type, string condition, int number_of_decks)
         {
-            this.type = type;
-            this.condition = condition;
-            this.number_of_decks = number_of_decks;
+            this.Type = type;
+            this.Condition = condition;
+            this.Number_Of_decks = number_of_decks;
         }
         public string Condition
         {
-            get { return condition; }
+            get { return _condition; }
             set
             {
                 if (value != "sunk" && value != "combat-ready" && value != "injured")
-                    condition = "sunk";
+                    _condition = "sunk";
                 else
-                    condition = value;
+                    _condition = value;
             }
         }
         public string Type
         {
-            get { return type; }
+            get { return _type; }
             set
             {
                 if (value != "battleship" && value != "cruiser" && value != "destroyer" && value != "boat")
-                    type = "boat";
+                    _type = "boat";
                 else
-                    type = value;
+                    _type = value;
             }
         }
         public int Number_Of_decks
         {
-            get { return number_of_decks; }
+            get { return _number_of_decks; }
             set
             {
-                if (0 < value && value < 5) number_of_decks = value;
-                else number_of_decks = 1;
+                if (0 < value && value < 5) _number_of_decks = value;
+                else _number_of_decks = 1;
             }
         }
-        public void Repair(Ship ship)
+        public void Repair()
         {
-            if (ship.condition == "sunk")
-                Console.WriteLine($"We can't repair a sunken ship.\nR.I.P {ship.Type}...");
-            else if (ship.condition == "injured")
+            if (this.Condition == "sunk")
+                Console.WriteLine($"We can't repair a sunken ship.\nR.I.P {this.Type}...");
+            else if (this.Condition == "injured")
             {
-                ship.condition = "combat-ready";
-                Console.WriteLine($"{ship.Type} has been repaired.");
+                this.Condition = "combat-ready";
+                Console.WriteLine($"{this.Type} has been repaired.");
             }
-            else if (ship.condition == "combat-ready")
-                Console.WriteLine($"{ship.Type} has already been repaired.");
+            else if (this.Condition == "combat-ready")
+                Console.WriteLine($"{this.Type} has already been repaired.");
         }
-        public void Battle(Ship n1, Ship n2)
+        public void Battle(Ship n1)
         {
-            if (n1.condition == "sunk" && n2.condition == "sunk")
+            if (n1.Condition == "sunk" && this.Condition == "sunk")
                 Console.WriteLine("draw");
-            else if (n1.condition != "sunk" && n2.condition == "sunk")
+            else if (n1.Condition != "sunk" && this.Condition == "sunk")
                 Console.WriteLine($"{n1.Type} wins!");
-            else if (n2.condition == "sunk" && n1.condition != "sunk")
-                Console.WriteLine($"{n2.Type} wins!");
-            else if (n1.condition != "sunk" && n2.condition != "sunk" &&
-                n1.number_of_decks > n2.number_of_decks)
+            else if (this.Condition == "sunk" && n1.Condition != "sunk")
+                Console.WriteLine($"{this.Type} wins!");
+            else if (n1.Condition != "sunk" && this.Condition != "sunk" &&
+                n1.Number_Of_decks > this.Number_Of_decks)
                 Console.WriteLine($"{n1.Type} wins!");
-            else if (n1.condition != "sunk" && n2.condition != "sunk" &&
-                n1.number_of_decks < n2.number_of_decks)
-                Console.WriteLine($"{n2.Type} wins!");
+            else if (n1.Condition != "sunk" && this.Condition != "sunk" &&
+                n1.Number_Of_decks < this.Number_Of_decks)
+                Console.WriteLine($"{this.Type} wins!");
             else
                 Console.WriteLine("draw");
         }
         public static bool operator !=(Ship n1, Ship n2)
         {
-            if(n1.condition != n2.condition)
+            if (n1.Condition != n2.Condition)
             {
-                if(n1.type != n2.type)
+                if (n1.Type != n2.Type)
                 {
-                    if (n1.number_of_decks != n2.number_of_decks)
+                    if (n1.Number_Of_decks != n2.Number_Of_decks)
                     {
                         return true;
                     }
@@ -96,11 +93,11 @@ namespace lab1_1
         }
         public static bool operator ==(Ship n1, Ship n2)
         {
-            if (n1.condition == n2.condition)
+            if (n1.Condition == n2.Condition)
             {
-                if (n1.type == n2.type)
+                if (n1.Type == n2.Type)
                 {
-                    if (n1.number_of_decks == n2.number_of_decks)
+                    if (n1.Number_Of_decks == n2.Number_Of_decks)
                     {
                         return true;
                     }
@@ -110,14 +107,14 @@ namespace lab1_1
         }
         public override string ToString()
         {
-            return String.Format("{0} is {1} and has {2} decks", type, condition, number_of_decks);
+            return String.Format("{0} is {1} and has {2} decks", _type, _condition, _number_of_decks);
         }
     }
     internal class Program
     {
         static void Main(string[] args)
         {
-            Ship battleship = new Ship("battleship", "combat-ready", 4);
+            Ship battleship = new Ship("battleship", "combat-ready", 20);
             Ship boat = new Ship();
             Console.WriteLine(battleship.ToString());
             Console.WriteLine(boat.ToString());
@@ -133,17 +130,17 @@ namespace lab1_1
             Console.WriteLine(battleship.ToString());
             Console.WriteLine(boat.ToString());
             Console.WriteLine(battleship.Number_Of_decks);
-            battleship.Repair(battleship);
-            boat.Repair(boat);
+            battleship.Repair();
+            boat.Repair();
             Console.WriteLine(battleship.ToString());
             Console.WriteLine(boat.ToString());
             battleship.Condition = "sunk";
-            battleship.Repair(battleship);
+            battleship.Repair();
             battleship.Condition = "combat-ready";
             Console.WriteLine(battleship.ToString());
             Console.WriteLine(boat.ToString());
             battleship.Number_Of_decks = 4;
-            battleship.Battle(boat, battleship);
+            battleship.Battle(boat);
             battleship.Condition = "combat-ready";
             battleship.Type = "battleship";
             battleship.Number_Of_decks = 4;
