@@ -3,10 +3,12 @@ using System.IO;
 
 namespace lab2_1
 {
+    [Serializable]
     public class RepairException : Exception
     {
         public RepairException() { }
         public RepairException(string message) : base(message) { }
+        public RepairException(string message, Exception inner) : base(message, inner) { }
     }
     abstract class Ship
     {
@@ -35,15 +37,14 @@ namespace lab2_1
                 }
                 catch (ArgumentException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
+                    Console.WriteLine(System.DateTime.Now.ToString());
                     Console.WriteLine(ex.Message);
                     Console.ReadLine();
                     Environment.Exit(0);
+                }
+                catch(Exception ex)
+                {
+                    Log(ex);
                 }
             }
         }
@@ -61,15 +62,14 @@ namespace lab2_1
                 }
                 catch (ArgumentException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
+                    Console.WriteLine(System.DateTime.Now.ToString());
                     Console.WriteLine(ex.Message);
                     Console.ReadLine();
                     Environment.Exit(0);
+                }
+                catch (Exception ex)
+                {
+                    Log(ex);
                 }
             }
         }
@@ -105,52 +105,61 @@ namespace lab2_1
                 }
                 catch (ArgumentException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
+                    Console.WriteLine(System.DateTime.Now.ToString());
                     Console.WriteLine(ex.Message);
                     Console.ReadLine();
                     Environment.Exit(0);
                 }
+                catch (Exception ex)
+                {
+                    Log(ex);
+                }
             }
         }
         abstract public void Move();
+        virtual public void Log(Exception ex)
+        {
+            Console.WriteLine("Что-то пошло не так...");
+            Console.WriteLine(System.DateTime.Now.ToString());
+            Console.WriteLine(ex.Message);
+            using (StreamWriter sw = new StreamWriter("logs.txt", true))
+            {
+                sw.WriteLine(System.DateTime.Now.ToString());
+                sw.WriteLine(ex.Message);
+                sw.WriteLine(ex.StackTrace);
+                sw.WriteLine(ex.InnerException);
+                sw.WriteLine(ex.TargetSite);
+                sw.WriteLine(ex.Data);
+                sw.WriteLine(ex.Source);
+            }
+        }
         virtual public void Repair()
         {
-            while (true)
+            try
             {
-                try
+                if (this.Condition == "broken")
                 {
-                    if (this.Condition == "broken")
-                    {
-                        this.Condition = "repaired";
-                        Console.WriteLine("Судно успешно отремонтировано.\n" +
-                            "------------------------------------------------------------------------------");
-                    }
-                    else if (this.Condition == "sunk")
-                    {
-                        throw new RepairException("Потонувшие суда нельзя починить!");
-                    }
-                    else Console.WriteLine("Судно не нуждается в ремонте.\n" +
+                    this.Condition = "repaired";
+                    Console.WriteLine("Судно успешно отремонтировано.\n" +
                         "------------------------------------------------------------------------------");
-                    break;
                 }
-                catch (RepairException ex)
+                else if (this.Condition == "sunk")
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine("Cудно должно быть сломано, чтобы починиться!");
-                    Console.Write("Состояние судна: ");
-                    this.Condition = Console.ReadLine();
+                    throw new RepairException("Потонувшие суда нельзя починить!");
                 }
+                else Console.WriteLine("Судно не нуждается в ремонте.\n" +
+                    "------------------------------------------------------------------------------");
+            }
+            catch (RepairException ex)
+            {
+                Console.WriteLine(System.DateTime.Now.ToString());
+                Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
             }
         }
         public static bool operator !=(Ship n1, Ship n2)
@@ -189,13 +198,14 @@ namespace lab2_1
             }
             catch (RepairException ex)
             {
-                string str = ex.StackTrace;
-                using (StreamWriter sw = new StreamWriter("logs.txt"))
-                {
-                    sw.WriteLine(str);
-                    sw.WriteLine(System.DateTime.Now.ToString());
-                }
+                Console.WriteLine(System.DateTime.Now.ToString());
                 Console.WriteLine(ex.Message);
+                Console.ReadLine();
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
             }
         }
         public Liner() : this("repaired", "medium", 100, 1500) { }
@@ -220,15 +230,14 @@ namespace lab2_1
                 }
                 catch (ArgumentException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
+                    Console.WriteLine(System.DateTime.Now.ToString());
                     Console.WriteLine(ex.Message);
                     Console.ReadLine();
                     Environment.Exit(0);
+                }
+                catch (Exception ex)
+                {
+                    Log(ex);
                 }
             }
         }
@@ -255,15 +264,14 @@ namespace lab2_1
             }
             catch (RepairException ex)
             {
-                string str = ex.StackTrace;
-                using (StreamWriter sw = new StreamWriter("logs.txt"))
-                {
-                    sw.WriteLine(str);
-                    sw.WriteLine(System.DateTime.Now.ToString());
-                }
+                Console.WriteLine(System.DateTime.Now.ToString());
                 Console.WriteLine(ex.Message);
                 Console.ReadLine();
                 Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
             }
         }
         public Cargo_Ship() : this("repaired", "big", 200, 15000) { }
@@ -285,15 +293,14 @@ namespace lab2_1
                 }
                 catch (ArgumentException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
+                    Console.WriteLine(System.DateTime.Now.ToString());
                     Console.WriteLine(ex.Message);
                     Console.ReadLine();
                     Environment.Exit(0);
+                }
+                catch (Exception ex)
+                {
+                    Log(ex);
                 }
             }
         }
@@ -322,15 +329,14 @@ namespace lab2_1
                 }
                 catch (ArgumentException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
+                    Console.WriteLine(System.DateTime.Now.ToString());
                     Console.WriteLine(ex.Message);
                     Console.ReadLine();
                     Environment.Exit(0);
+                }
+                catch (Exception ex)
+                {
+                    Log(ex);
                 }
             }
         }
@@ -350,15 +356,14 @@ namespace lab2_1
             }
             catch (RepairException ex)
             {
-                string str = ex.StackTrace;
-                using (StreamWriter sw = new StreamWriter("logs.txt"))
-                {
-                    sw.WriteLine(str);
-                    sw.WriteLine(System.DateTime.Now.ToString());
-                }
+                Console.WriteLine(System.DateTime.Now.ToString());
                 Console.WriteLine(ex.Message);
                 Console.ReadLine();
                 Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
             }
         }
     }
@@ -382,15 +387,14 @@ namespace lab2_1
             }
             catch (RepairException ex)
             {
-                string str = ex.StackTrace;
-                using (StreamWriter sw = new StreamWriter("logs.txt"))
-                {
-                    sw.WriteLine(str);
-                    sw.WriteLine(System.DateTime.Now.ToString());
-                }
+                Console.WriteLine(System.DateTime.Now.ToString());
                 Console.WriteLine(ex.Message);
                 Console.ReadLine();
                 Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Log(ex);
             }
         }
         public override string ToString()
@@ -428,45 +432,36 @@ namespace lab2_1
                 }
                 catch (FileNotFoundException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
                     Console.WriteLine(ex.Message);
                     Console.WriteLine("Файл, имя которого вы ввели, не существует.\n" +
                         "Введите имя существующего файла.");
                 }
                 catch (ArgumentException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
                     Console.WriteLine(ex.Message);
                 }
                 catch (DirectoryNotFoundException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
                     Console.WriteLine(ex.Message);
                 }
                 catch (UnauthorizedAccessException ex)
                 {
-                    string str = ex.StackTrace;
-                    using (StreamWriter sw = new StreamWriter("logs.txt"))
-                    {
-                        sw.WriteLine(str);
-                        sw.WriteLine(System.DateTime.Now.ToString());
-                    }
                     Console.WriteLine(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Что-то пошло не так.");
+                    Console.WriteLine(System.DateTime.Now.ToString());
+                    Console.WriteLine(ex.Message);
+                    using (StreamWriter sw = new StreamWriter("logs.txt", true))
+                    {
+                        sw.WriteLine(System.DateTime.Now.ToString());
+                        sw.WriteLine(ex.Message);
+                        sw.WriteLine(ex.StackTrace);
+                        sw.WriteLine(ex.InnerException);
+                        sw.WriteLine(ex.TargetSite);
+                        sw.WriteLine(ex.Data);
+                    }
                 }
             }
             foreach (var ship in ships)
