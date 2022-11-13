@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ListLib
+namespace Lab5
 {
     internal class Node<T>
     {
@@ -18,7 +18,7 @@ namespace ListLib
         }
     }
 
-    public class MyList<T>:IEnumerable<T> where T:IComparable<T>
+    public class MyList<T> : IEnumerable<T> where T : IComparable<T>
     {
         private Node<T> _head, _tail;
         public int Count { get; private set; }
@@ -31,16 +31,16 @@ namespace ListLib
 
         public MyList(IEnumerable<T> values)
         {
-            if (values == null )
+            if (values == null)
             {
                 throw new ArgumentNullException();
             }
 
             if (!values.Any())
             {
-               Count = 0;
+                Count = 0;
             }
-            
+
             foreach (var value in values)
             {
                 Add(value);
@@ -49,9 +49,9 @@ namespace ListLib
         }
         public int LastIndexOf(T elem)
         {
-            for (int i = Count; i >= 0; i--)
+            for (int i = Count; i <= 0; i--)
             {
-                if () return i;
+                if(MyList<T>.ReferenceEquals(elem, _head.Value)) return i - 1;
             }
             return -1;
         }
@@ -79,7 +79,7 @@ namespace ListLib
 
         public IEnumerator<T> GetEnumerator()
         {
-            for (var node = _head; node != null;node = node.Next)
+            for (var node = _head; node != null; node = node.Next)
             {
                 yield return node.Value;
             }
